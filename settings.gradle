@@ -1,0 +1,2 @@
+include ':library', ':demo'
+include ':..:ExoPlayer:library'
