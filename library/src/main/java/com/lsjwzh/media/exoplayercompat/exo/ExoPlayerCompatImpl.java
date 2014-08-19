@@ -6,13 +6,13 @@ import android.os.AsyncTask;
 import android.view.SurfaceHolder;
 
 import com.google.android.exoplayer.ExoPlayer;
-import com.lsjwzh.media.exoplayercompat.IMediaPlayerCompat;
+import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
 
 /**
  * Created by panwenye on 14-8-18.
  */
-public class MEExoPlayer implements IMediaPlayerCompat {
-    private static final String TAG = MEExoPlayer.class.getSimpleName();
+ class ExoPlayerCompatImpl extends MediaPlayerCompat {
+    private static final String TAG = ExoPlayerCompatImpl.class.getSimpleName();
     ExoPlayerWrapper mExoPlayer;
     SurfaceHolder holder;
     private boolean isPrepared;
@@ -20,7 +20,7 @@ public class MEExoPlayer implements IMediaPlayerCompat {
     //标记是否开始了prepare过程
     private boolean isStartPrepare = false;
 
-    public MEExoPlayer() {
+    public ExoPlayerCompatImpl() {
     }
 
     @Override
@@ -179,6 +179,7 @@ public class MEExoPlayer implements IMediaPlayerCompat {
 
     @Override
     public void setAudioStreamType(int streamMusic) {
+        //exoplayer have not this method
 //        mediaPlayer.setAudioStreamType(streamMusic);
     }
 
