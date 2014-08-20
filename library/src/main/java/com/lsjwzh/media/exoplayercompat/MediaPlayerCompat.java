@@ -17,7 +17,7 @@ public abstract class MediaPlayerCompat {
         void onPrepared();
         void onStart();
         void onPlayComplete();
-        void onSeekComplete(long positionBeforeSeek,long positionAfterSeek);
+        void onSeekComplete(long positionAfterSeek);
         void onPause();
         void onStop();
         void onReset();
@@ -42,7 +42,7 @@ public abstract class MediaPlayerCompat {
     public abstract void prepareAsync(Runnable onPreparedComplete);
     public abstract void start();
     public abstract void seekTo(long position);
-    public abstract void seekTo(long position,Runnable seekCompleteCallback);
+//    public abstract void seekTo(long position,Runnable seekCompleteCallback);
     public abstract void pause();
     public abstract void stop();
     public abstract void reset();

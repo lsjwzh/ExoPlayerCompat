@@ -62,21 +62,14 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
     public void seekTo(long position) {
         try {
             mExoPlayer.seekTo((int) position);
+            for(EventListener listener : getListeners()){
+                listener.onSeekComplete(position);
+            }
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void seekTo(long position, final Runnable seekCompleteCallback) {
-        if (getCurrentPosition() == position) {
-            seekCompleteCallback.run();
-            return;
-        }
-        seekTo(position);
-        seekCompleteCallback.run();
-
-    }
 
     @Override
     public void start() {
@@ -95,6 +88,9 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
             return;
         }
         mExoPlayer.getPlayerControl().pause();
+        for(EventListener listener : getListeners()){
+            listener.onPause();
+        }
     }
 
     @Override
