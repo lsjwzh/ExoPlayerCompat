@@ -6,3 +6,4 @@ ExoPlayer Compatibility Library:when ExoPlayer is invalid ,it use MediaPlayer in
 ToDo List
 =========
 1. add flag to judge if MediaPlayer should be switched to Raw MediaPlayer when  ExoPlayer ‘prepare’ failed. 
+2. ExoPlayer friendly white-list.
