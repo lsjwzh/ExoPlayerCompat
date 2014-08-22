@@ -1,13 +1,19 @@
 package com.lsjwzh.media.exoplayercompat.exo;
 
 import android.content.Context;
+import android.media.MediaCodec;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.Looper;
 import android.view.SurfaceHolder;
 
 import com.google.android.exoplayer.ExoPlayer;
+import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
+import com.google.android.exoplayer.MediaCodecTrackRenderer;
 import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
+
+import java.io.IOException;
 
 /**
  * Created by panwenye on 14-8-18.
@@ -20,6 +26,7 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
     private boolean isReleased;
     //标记是否开始了prepare过程
     private boolean isStartPrepare = false;
+    Handler handler = new Handler();
 
     public ExoPlayerCompatImpl() {
     }
@@ -98,6 +105,9 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
     public void stop() {
         if (mExoPlayer != null) {
             mExoPlayer.stop();
+            for(EventListener listener : getListeners()){
+                listener.onStop();
+            }
         }
     }
 
@@ -112,6 +122,18 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
                         mExoPlayer.release();
                         mExoPlayer = null;
                         isReleased = true;
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(ExoPlayerCompatImpl.this==null){
+                                        return;
+                                    }
+                                    for(EventListener listener : getListeners()) {
+                                        listener.onRelease();
+                                    }
+                                }
+                            });
+
                     }
                 }
             }.start();
@@ -119,6 +141,10 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
             mExoPlayer.release();
             mExoPlayer = null;
             isReleased = true;
+
+            for(EventListener listener : getListeners()){
+                listener.onRelease();
+            }
         }
     }
 
@@ -139,6 +165,10 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
         mExoPlayer.prepare();
         isStartPrepare = false;
         isPrepared = true;
+
+        for(EventListener listener : getListeners()){
+            listener.onPrepared();
+        }
     }
 
     public boolean isReleased() {
@@ -152,15 +182,74 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
             @Override
             public void onStateChanged(boolean playWhenReady, int playbackState) {
                 if (playbackState == ExoPlayer.STATE_ENDED) {
+                    for(EventListener listener : getListeners()){
+                        listener.onPlayComplete();
+                    }
                 }
             }
 
             @Override
             public void onError(Exception e) {
+                for(EventListener listener : getListeners()){
+                    listener.onError(e);
+                }
             }
 
             @Override
             public void onVideoSizeChanged(int width, int height) {
+                for(EventListener listener : getListeners()){
+                    listener.onVideoSizeChanged(width,height);
+                }
+            }
+        });
+        mExoPlayer.setInternalErrorListener(new ExoPlayerWrapper.InternalErrorListener() {
+            @Override
+            public void onRendererInitializationError(Exception e) {
+                for(EventListener listener : getListeners()){
+                    listener.onError(e);
+                }
+            }
+
+            @Override
+            public void onAudioTrackInitializationError(MediaCodecAudioTrackRenderer.AudioTrackInitializationException e) {
+                for(EventListener listener : getListeners()){
+                    listener.onError(e);
+                }
+            }
+
+            @Override
+            public void onDecoderInitializationError(MediaCodecTrackRenderer.DecoderInitializationException e) {
+                for(EventListener listener : getListeners()){
+                    listener.onError(e);
+                }
+            }
+
+            @Override
+            public void onCryptoError(MediaCodec.CryptoException e) {
+                for(EventListener listener : getListeners()){
+                    listener.onError(e);
+                }
+            }
+
+            @Override
+            public void onUpstreamError(int sourceId, IOException e) {
+                for(EventListener listener : getListeners()){
+                    listener.onError(e);
+                }
+            }
+
+            @Override
+            public void onConsumptionError(int sourceId, IOException e) {
+                for(EventListener listener : getListeners()){
+                    listener.onError(e);
+                }
+            }
+
+            @Override
+            public void onDrmSessionManagerError(Exception e) {
+                for(EventListener listener : getListeners()){
+                    listener.onError(e);
+                }
             }
         });
     }
@@ -180,12 +269,20 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
     public void reset() {
         isPrepared = false;
         this.setDisplay(null);
+
+        for(EventListener listener : getListeners()){
+            listener.onReset();
+        }
     }
 
 
     @Override
     public void setVolume(float v, float v1) {
         mExoPlayer.setVolume(v);
+
+        for(EventListener listener : getListeners()){
+            listener.onVolumeChanged(v,v);
+        }
     }
 
     @Override

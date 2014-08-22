@@ -13,6 +13,11 @@ import java.util.List;
  * Created by panwenye on 14-8-19.
  */
 public abstract class MediaPlayerCompat {
+    public class UnknownMediaPlayerException extends Exception{
+        public int what;
+        public int extra;
+
+    }
     public interface EventListener{
         void onPrepared();
         void onStart();
@@ -23,9 +28,10 @@ public abstract class MediaPlayerCompat {
         void onReset();
         void onRelease();
         void onPositionUpdate(long position,long duration);
-        void onVolumeChanged(float v1,float v2,float newV1,float newV2);
+        void onVolumeChanged(float newV1,float newV2);
         void onBuffering(long loaded,long all);
         void onError(Exception e);
+        void onVideoSizeChanged(int width, int height);
     }
     final LinkedList<EventListener> mListeners = new LinkedList<EventListener>();
 
@@ -39,7 +45,7 @@ public abstract class MediaPlayerCompat {
      * prepare the media.
      */
     public abstract void prepare();
-    public abstract void prepareAsync(Runnable onPreparedComplete);
+    public abstract void prepareAsync();
     public abstract void start();
     public abstract void seekTo(long position);
 //    public abstract void seekTo(long position,Runnable seekCompleteCallback);
