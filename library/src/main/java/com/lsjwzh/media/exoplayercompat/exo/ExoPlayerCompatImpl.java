@@ -11,6 +11,7 @@ import android.view.SurfaceHolder;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.MediaCodecTrackRenderer;
+import com.lsjwzh.media.exoplayercompat.MediaMonitor;
 import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
 
 import java.io.IOException;
@@ -24,9 +25,9 @@ import java.io.IOException;
     SurfaceHolder holder;
     private boolean isPrepared;
     private boolean isReleased;
-    //标记是否开始了prepare过程
     private boolean isStartPrepare = false;
     Handler handler = new Handler();
+    private MediaMonitor mMediaMonitor;
 
     public ExoPlayerCompatImpl() {
     }
@@ -46,25 +47,6 @@ import java.io.IOException;
         return isPrepared;
     }
 
-    @Override
-    public void prepareAsync(final Runnable runnable) {
-        if (!isStartPrepare) {
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... params) {
-                    prepare();
-                    return null;
-                }
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    if (runnable != null) {
-                        runnable.run();
-                    }
-                }
-            }.execute();
-        }
-        isStartPrepare = true;
-    }
 
     @Override
     public void seekTo(long position) {
@@ -83,6 +65,9 @@ import java.io.IOException;
     public void start() {
         try {
             mExoPlayer.getPlayerControl().start();
+            if(mMediaMonitor!=null){
+                mMediaMonitor.start();
+            }
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
@@ -96,6 +81,9 @@ import java.io.IOException;
             return;
         }
         mExoPlayer.getPlayerControl().pause();
+        if(mMediaMonitor!=null){
+            mMediaMonitor.pause();
+        }
         for(EventListener listener : getListeners()){
             listener.onPause();
         }
@@ -105,6 +93,9 @@ import java.io.IOException;
     public void stop() {
         if (mExoPlayer != null) {
             mExoPlayer.stop();
+            if(mMediaMonitor!=null){
+                mMediaMonitor.pause();
+            }
             for(EventListener listener : getListeners()){
                 listener.onStop();
             }
@@ -169,6 +160,29 @@ import java.io.IOException;
         for(EventListener listener : getListeners()){
             listener.onPrepared();
         }
+    }
+
+    @Override
+    public void prepareAsync() {
+        if (isStartPrepare) {
+            return;
+        }
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                mExoPlayer.prepare();
+                isStartPrepare = false;
+                isPrepared = true;
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                for(EventListener listener : getListeners()){
+                    listener.onPrepared();
+                }
+            }
+        };
     }
 
     public boolean isReleased() {
@@ -252,6 +266,22 @@ import java.io.IOException;
                 }
             }
         });
+        //use MediaMonitor to update position change
+        if(mMediaMonitor==null) {
+            mMediaMonitor = new MediaMonitor();
+            mMediaMonitor.task = new Runnable() {
+                @Override
+                public void run() {
+                    if (mExoPlayer != null) {
+                        int currentPosition = mExoPlayer.getCurrentPosition();
+                        int duration = mExoPlayer.getDuration();
+                        for (EventListener listener : getListeners()) {
+                            listener.onPositionUpdate(currentPosition, duration);
+                        }
+                    }
+                }
+            };
+        }
     }
 
     @Override
@@ -269,7 +299,9 @@ import java.io.IOException;
     public void reset() {
         isPrepared = false;
         this.setDisplay(null);
-
+        if(mMediaMonitor!=null){
+            mMediaMonitor.pause();
+        }
         for(EventListener listener : getListeners()){
             listener.onReset();
         }

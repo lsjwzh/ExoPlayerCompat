@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @since 14-2-14
  */
 public class StrongerMediaPlayer extends MediaPlayer {
-    public static final String TAG = "StrongMediaPlayer";
+    public static final String TAG = "StrongerMediaPlayer";
     private static int MSG_START = 1;
     private static int MSG_PAUSE = 2;
 

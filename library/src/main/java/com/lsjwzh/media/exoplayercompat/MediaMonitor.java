@@ -2,6 +2,7 @@ package com.lsjwzh.media.exoplayercompat;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
 
 /**
@@ -11,74 +12,49 @@ public class MediaMonitor implements Runnable {
     private final Object mLock = new Object();
     public Runnable task;
     volatile boolean isRunning = false;
-    //记录monitorCurrentDialogItem相关的暂停状态计时器
-    Handler innerHanlder;
-    int runCount = 0;
-    private Looper mLooper;
-    private Runnable taskToWatchProgress = new Runnable() {
-        @Override
-        public void run() {
-            synchronized (mLock) {
-                if(task!=null){
-                    try{
-                        task.run();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-                registerLoop();
-            }
-        }
-    };
+    Thread mThread;
+    Handler initHandler = new Handler();
 
     /**
      * Creates a worker thread with the given name. The thread
      * then runs a {@link android.os.Looper}.
      */
     public MediaMonitor() {
-        Thread t = new Thread(null, this, "monitor");
-
-        t.start();
-        synchronized (mLock) {
-            while (mLooper == null) {
-                try {
-                    mLock.wait();
-                } catch (InterruptedException ex) {
-                }
-            }
-        }
-        innerHanlder = new Handler(getLooper());
+        mThread = new Thread(null, this, "monitor");
+        mThread.start();
     }
 
-    public Looper getLooper() {
-        return mLooper;
-    }
-
-    private void registerLoop() {
-        if (isRunning) {
-            innerHanlder.removeCallbacksAndMessages(null);
-            innerHanlder.postDelayed(taskToWatchProgress, 100);
-        }
-    }
 
     public void start() {
         synchronized (mLock) {
             if (!isRunning) {
                 isRunning = true;
-                innerHanlder.removeCallbacksAndMessages(null);
-                innerHanlder.postDelayed(taskToWatchProgress, 100);
-                Log.d("taskToWatchProgress", "start monitor");
             }
+            mLock.notifyAll();
         }
     }
 
     public void run() {
-        synchronized (mLock) {
-            Looper.prepare();
-            mLooper = Looper.myLooper();
-            mLock.notifyAll();
+        while (!Thread.interrupted()) {
+            synchronized (mLock) {
+                if (isRunning) {
+                    try {
+                        mLock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            SystemClock.sleep(100);
+            //not execute task in Monitor Thread
+            if (task != null) {
+                try {
+                    initHandler.post(task);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        Looper.loop();
     }
 
     public void pause() {
@@ -88,7 +64,12 @@ public class MediaMonitor implements Runnable {
     }
 
     public void quit() {
-        mLooper.quit();
+        if(mThread!=null){
+            synchronized (mLock) {
+                mLock.notifyAll();
+            }
+            mThread.interrupt();
+        }
     }
 
 
