@@ -3,6 +3,7 @@ package com.lsjwzh.media.exoplayercompat.exo;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.view.SurfaceHolder;
 
 import com.google.android.exoplayer.ExoPlayer;
@@ -102,9 +103,23 @@ import com.lsjwzh.media.exoplayercompat.MediaPlayerCompat;
 
     @Override
     public void release() {
-        mExoPlayer.release();
-        mExoPlayer = null;
-        isReleased = true;
+        //ensure that player do not release at ui thread to avoid ANR in some rom
+        if(Looper.myLooper()==Looper.getMainLooper()){
+            new Thread(){
+                @Override
+                public void run() {
+                    if(mExoPlayer!=null) {
+                        mExoPlayer.release();
+                        mExoPlayer = null;
+                        isReleased = true;
+                    }
+                }
+            }.start();
+        }else {
+            mExoPlayer.release();
+            mExoPlayer = null;
+            isReleased = true;
+        }
     }
 
     @Override
