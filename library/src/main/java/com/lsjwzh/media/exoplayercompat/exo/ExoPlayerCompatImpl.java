@@ -182,7 +182,7 @@ import java.io.IOException;
                     listener.onPrepared();
                 }
             }
-        };
+        }.execute();
     }
 
     public boolean isReleased() {
