@@ -37,7 +37,7 @@ public class MediaMonitor implements Runnable {
     public void run() {
         while (!Thread.interrupted()) {
             synchronized (mLock) {
-                if (isRunning) {
+                if (!isRunning) {
                     try {
                         mLock.wait();
                     } catch (InterruptedException e) {

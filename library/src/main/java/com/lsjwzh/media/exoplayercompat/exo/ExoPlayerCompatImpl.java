@@ -19,7 +19,7 @@ import java.io.IOException;
 /**
  * Created by panwenye on 14-8-18.
  */
- class ExoPlayerCompatImpl extends MediaPlayerCompat {
+ public class ExoPlayerCompatImpl extends MediaPlayerCompat {
     private static final String TAG = ExoPlayerCompatImpl.class.getSimpleName();
     ExoPlayerWrapper mExoPlayer;
     SurfaceHolder holder;

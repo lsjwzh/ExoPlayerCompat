@@ -4,6 +4,9 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.view.SurfaceHolder;
 
+import com.lsjwzh.media.exoplayercompat.exo.ExoPlayerCompatImpl;
+import com.lsjwzh.media.exoplayercompat.sys.SysMediaPlayerImpl;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +36,13 @@ public abstract class MediaPlayerCompat {
         void onError(Exception e);
         void onVideoSizeChanged(int width, int height);
     }
+    public static MediaPlayerCompat exoMediaPlayerInstance(){
+        return new ExoPlayerCompatImpl();
+    }
+    public static MediaPlayerCompat sysMediaPlayerInstance(){
+        return new SysMediaPlayerImpl();
+    }
+
     final LinkedList<EventListener> mListeners = new LinkedList<EventListener>();
 
 
@@ -64,7 +74,9 @@ public abstract class MediaPlayerCompat {
     public abstract void setAudioStreamType(int streamMusic);
 
     public void addListener(EventListener listener){
-        mListeners.add(listener);
+        if(!mListeners.contains(listener)) {
+            mListeners.add(listener);
+        }
     }
     public void removeListener(EventListener listener){
         mListeners.remove(listener);
