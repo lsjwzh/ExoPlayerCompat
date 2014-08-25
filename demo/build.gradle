@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.lsjwzh.media.exocompatdemo"
-        minSdkVersion 8
-        targetSdkVersion 14
+        minSdkVersion 14
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -22,4 +22,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:19.1.0'
+    compile project(':..:..:OpenSourceLibs:ExoPlayer:library')
+    compile project(':library')
+
+
 }
