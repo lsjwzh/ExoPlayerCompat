@@ -68,13 +68,78 @@ public class MainActivity extends ActionBarActivity implements SurfaceHolder.Cal
             eventLogger = new EventLogger();
             eventLogger.startSession();
         }
+        player.addListener(new MediaPlayerCompat.EventListener() {
+            @Override
+            public void onPrepared() {
+                player.setDisplay(surface_view.getHolder());
+                maybeStartPlayback();
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onPlayComplete() {
+
+            }
+
+            @Override
+            public void onSeekComplete(long positionAfterSeek) {
+
+            }
+
+            @Override
+            public void onPause() {
+
+            }
+
+            @Override
+            public void onStop() {
+
+            }
+
+            @Override
+            public void onReset() {
+
+            }
+
+            @Override
+            public void onRelease() {
+
+            }
+
+            @Override
+            public void onPositionUpdate(long position, long duration) {
+
+            }
+
+            @Override
+            public void onVolumeChanged(float newV1, float newV2) {
+
+            }
+
+            @Override
+            public void onBuffering(int percentage) {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onVideoSizeChanged(int width, int height) {
+
+            }
+        });
         if (playerNeedsPrepare) {
-            player.prepare();
+            player.prepareAsync();
             playerNeedsPrepare = false;
 
         }
-        player.setDisplay(surface_view.getHolder());
-        maybeStartPlayback();
     }
 
     private void maybeStartPlayback() {

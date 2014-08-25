@@ -45,6 +45,14 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
                     }
                 }
             };
+            mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                @Override
+                public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                    for (EventListener listener : getListeners()) {
+                        listener.onBuffering(percent);
+                    }
+                }
+            });
         }
         try {
             mMediaPlayer.setDataSource(path);

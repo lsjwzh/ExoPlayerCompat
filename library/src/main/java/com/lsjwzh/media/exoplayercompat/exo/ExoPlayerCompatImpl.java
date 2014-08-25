@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.view.SurfaceHolder;
 
 import com.google.android.exoplayer.ExoPlayer;
@@ -67,6 +68,9 @@ import java.io.IOException;
             mExoPlayer.getPlayerControl().start();
             if(mMediaMonitor!=null){
                 mMediaMonitor.start();
+            }
+            for(EventListener listener : getListeners()){
+                listener.onStart();
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -198,6 +202,11 @@ import java.io.IOException;
                 if (playbackState == ExoPlayer.STATE_ENDED) {
                     for(EventListener listener : getListeners()){
                         listener.onPlayComplete();
+                    }
+                }else if (playbackState == ExoPlayer.STATE_BUFFERING) {
+                    //xx 很可能到不了100%？
+                    for(EventListener listener : getListeners()){
+                        listener.onBuffering(mExoPlayer.getBufferedPercentage());
                     }
                 }
             }

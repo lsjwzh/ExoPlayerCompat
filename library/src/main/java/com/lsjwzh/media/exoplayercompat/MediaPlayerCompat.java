@@ -32,7 +32,7 @@ public abstract class MediaPlayerCompat {
         void onRelease();
         void onPositionUpdate(long position,long duration);
         void onVolumeChanged(float newV1,float newV2);
-        void onBuffering(long loaded,long all);
+        void onBuffering(int loadedPercentage);
         void onError(Exception e);
         void onVideoSizeChanged(int width, int height);
     }
