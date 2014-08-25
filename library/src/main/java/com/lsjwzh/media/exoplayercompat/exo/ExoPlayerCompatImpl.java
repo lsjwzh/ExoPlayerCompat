@@ -29,6 +29,7 @@ import java.io.IOException;
     private boolean isStartPrepare = false;
     Handler handler = new Handler();
     private MediaMonitor mMediaMonitor;
+    private boolean mIsBuffering;
 
     public ExoPlayerCompatImpl() {
     }
@@ -204,9 +205,19 @@ import java.io.IOException;
                         listener.onPlayComplete();
                     }
                 }else if (playbackState == ExoPlayer.STATE_BUFFERING) {
+                    mIsBuffering = true;
+                    int bufferedPercentage = mExoPlayer.getBufferedPercentage();
+                    if(bufferedPercentage==100){
+                        mIsBuffering = false;
+                    }
                     //xx 很可能到不了100%？
                     for(EventListener listener : getListeners()){
-                        listener.onBuffering(mExoPlayer.getBufferedPercentage());
+                        listener.onBuffering(bufferedPercentage);
+                    }
+                }else if(mIsBuffering && playbackState == ExoPlayer.STATE_READY){
+                    mIsBuffering = false;
+                    for(EventListener listener : getListeners()){
+                        listener.onBuffering(100);
                     }
                 }
             }
