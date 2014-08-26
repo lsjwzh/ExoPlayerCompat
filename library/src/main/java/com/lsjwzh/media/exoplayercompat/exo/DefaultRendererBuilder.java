@@ -36,11 +36,13 @@ public class DefaultRendererBuilder implements ExoPlayerWrapper.RendererBuilder 
     private static final int AUDIO_BUFFER_SEGMENTS = 60;
   private final Context context;
   private final Uri uri;
+    private final boolean onlyAudio;
 //  private final TextView debugTextView;
 
-  public DefaultRendererBuilder(Context context, Uri uri) {
+  public DefaultRendererBuilder(Context context, Uri uri,boolean onlyAudio) {
     this.context = context;
     this.uri = uri;
+      this.onlyAudio = onlyAudio;
 //    this.debugTextView = debugTextView;
   }
 
@@ -84,7 +86,7 @@ public class DefaultRendererBuilder implements ExoPlayerWrapper.RendererBuilder 
 //        null, true, player.getMainHandler(), player);
 
       FrameworkSampleSource sampleSource = new FrameworkSampleSource(context, uri, null, 1);
-      MediaCodecVideoTrackRenderer videoRenderer = new MediaCodecVideoTrackRenderer(sampleSource,
+      MediaCodecVideoTrackRenderer videoRenderer = onlyAudio?null: new MediaCodecVideoTrackRenderer(sampleSource,
               null, true, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT, 5000,
               player.getMainHandler(), player, 50);
       MediaCodecAudioTrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource,

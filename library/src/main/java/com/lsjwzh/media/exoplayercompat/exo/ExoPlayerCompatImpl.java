@@ -30,8 +30,13 @@ import java.io.IOException;
     Handler handler = new Handler();
     private MediaMonitor mMediaMonitor;
     private boolean mIsBuffering;
+    private boolean mOnlyAudio;
+
 
     public ExoPlayerCompatImpl() {
+    }
+    public ExoPlayerCompatImpl(boolean onlyAudio) {
+        mOnlyAudio = onlyAudio;
     }
 
     @Override
@@ -196,7 +201,7 @@ import java.io.IOException;
 
     @Override
     public void setDataSource(Context context, String path) {
-        mExoPlayer = new ExoPlayerWrapper(new DefaultRendererBuilder(context, Uri.parse(path)));
+        mExoPlayer = new ExoPlayerWrapper(new DefaultRendererBuilder(context, Uri.parse(path),mOnlyAudio));
         mExoPlayer.addListener(new ExoPlayerWrapper.Listener() {
             @Override
             public void onStateChanged(boolean playWhenReady, int playbackState) {

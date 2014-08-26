@@ -39,6 +39,10 @@ public abstract class MediaPlayerCompat {
     public static MediaPlayerCompat exoMediaPlayerInstance(){
         return new ExoPlayerCompatImpl();
     }
+    public static MediaPlayerCompat exoMediaPlayerInstance(boolean onlyAudio){
+        return new ExoPlayerCompatImpl(onlyAudio);
+    }
+
     public static MediaPlayerCompat sysMediaPlayerInstance(){
         return new SysMediaPlayerImpl();
     }
