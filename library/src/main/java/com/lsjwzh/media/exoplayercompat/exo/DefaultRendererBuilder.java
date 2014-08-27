@@ -19,10 +19,11 @@ import android.content.Context;
 import android.media.MediaCodec;
 import android.net.Uri;
 
-import com.google.android.exoplayer.FrameworkSampleSource;
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
-import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.TrackRenderer;
+import com.lsjwzh.media.exoplayercompat.exo.FrameworkSampleSource;
+import com.lsjwzh.media.exoplayercompat.exo.MediaCodecAudioTrackRenderer;
+import com.lsjwzh.media.exoplayercompat.exo.MediaCodecVideoTrackRenderer;
+
 
 /**
  * A {@link } for streams that can be read using

@@ -23,10 +23,9 @@ import android.view.Surface;
 import com.google.android.exoplayer.DummyTrackRenderer;
 import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer.AudioTrackInitializationException;
+import com.lsjwzh.media.exoplayercompat.exo.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.MediaCodecTrackRenderer.DecoderInitializationException;
-import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
+import com.lsjwzh.media.exoplayercompat.exo.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.TrackRenderer;
 import com.google.android.exoplayer.chunk.ChunkSampleSource;
 import com.google.android.exoplayer.chunk.MultiTrackChunkSource;
@@ -107,7 +106,7 @@ public class ExoPlayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
    */
   public interface InternalErrorListener {
     void onRendererInitializationError(Exception e);
-    void onAudioTrackInitializationError(AudioTrackInitializationException e);
+    void onAudioTrackInitializationError(com.google.android.exoplayer.MediaCodecAudioTrackRenderer.AudioTrackInitializationException e);
     void onDecoderInitializationError(DecoderInitializationException e);
     void onCryptoError(CryptoException e);
     void onUpstreamError(int sourceId, IOException e);
@@ -441,7 +440,7 @@ public class ExoPlayerWrapper implements ExoPlayer.Listener, ChunkSampleSource.E
   }
 
   @Override
-  public void onAudioTrackInitializationError(AudioTrackInitializationException e) {
+  public void onAudioTrackInitializationError(com.google.android.exoplayer.MediaCodecAudioTrackRenderer.AudioTrackInitializationException e) {
     if (internalErrorListener != null) {
       internalErrorListener.onAudioTrackInitializationError(e);
     }
