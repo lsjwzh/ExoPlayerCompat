@@ -50,7 +50,7 @@ public abstract class MediaCodecTrackRenderer extends TrackRenderer {
      *
      * @param e The corresponding exception.
      */
-    void onDecoderInitializationError(DecoderInitializationException e);
+    void onDecoderInitializationError(com.google.android.exoplayer.MediaCodecTrackRenderer.DecoderInitializationException e);
 
     /**
      * Invoked when a decoder operation raises a {@link android.media.MediaCodec.CryptoException}.
@@ -58,24 +58,6 @@ public abstract class MediaCodecTrackRenderer extends TrackRenderer {
      * @param e The corresponding exception.
      */
     void onCryptoError(CryptoException e);
-
-  }
-
-  /**
-   * Thrown when a failure occurs instantiating a decoder.
-   */
-  public static class DecoderInitializationException extends com.google.android.exoplayer.MediaCodecTrackRenderer.DecoderInitializationException {
-
-    /**
-     * The name of the decoder that failed to initialize.
-     */
-//    public final String decoderName;
-
-    public DecoderInitializationException(String decoderName, MediaFormat mediaFormat,
-        Exception cause) {
-      super(decoderName, mediaFormat, cause);
-//      this.decoderName = decoderName;
-    }
 
   }
 
@@ -261,7 +243,7 @@ public abstract class MediaCodecTrackRenderer extends TrackRenderer {
       inputBuffers = codec.getInputBuffers();
       outputBuffers = codec.getOutputBuffers();
     } catch (Exception e) {
-      DecoderInitializationException exception = new DecoderInitializationException(
+      com.google.android.exoplayer.MediaCodecTrackRenderer.DecoderInitializationException exception = new com.google.android.exoplayer.MediaCodecTrackRenderer.DecoderInitializationException(
           selectedDecoderName, format, e);
       notifyDecoderInitializationError(exception);
       throw new ExoPlaybackException(exception);
@@ -721,7 +703,7 @@ public abstract class MediaCodecTrackRenderer extends TrackRenderer {
     return rawDecoderName + ".secure";
   }
 
-  private void notifyDecoderInitializationError(final DecoderInitializationException e) {
+  private void notifyDecoderInitializationError(final com.google.android.exoplayer.MediaCodecTrackRenderer.DecoderInitializationException e) {
     if (eventHandler != null && eventListener != null) {
       eventHandler.post(new Runnable()  {
         @Override
