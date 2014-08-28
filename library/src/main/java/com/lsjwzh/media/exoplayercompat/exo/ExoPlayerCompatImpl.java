@@ -163,13 +163,8 @@ import java.io.IOException;
         if (isStartPrepare) {
             return;
         }
+        isStartPrepare = true;
         mExoPlayer.prepare();
-        isStartPrepare = false;
-        isPrepared = true;
-
-        for(EventListener listener : getListeners()){
-            listener.onPrepared();
-        }
     }
 
     @Override
@@ -177,20 +172,16 @@ import java.io.IOException;
         if (isStartPrepare) {
             return;
         }
+        isStartPrepare = true;
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... params) {
                 mExoPlayer.prepare();
-                isStartPrepare = false;
-                isPrepared = true;
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                for(EventListener listener : getListeners()){
-                    listener.onPrepared();
-                }
             }
         }.execute();
     }
@@ -223,6 +214,13 @@ import java.io.IOException;
                     mIsBuffering = false;
                     for(EventListener listener : getListeners()){
                         listener.onBuffering(100);
+                    }
+                }
+                if(isStartPrepare && playbackState == ExoPlayer.STATE_READY){
+                    isStartPrepare = false;
+                    isPrepared = true;
+                    for(EventListener listener : getListeners()){
+                        listener.onPrepared();
                     }
                 }
             }
