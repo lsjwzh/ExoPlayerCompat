@@ -25,13 +25,33 @@ public abstract class MediaPlayerCompat {
         void onPrepared();
         void onStart();
         void onPlayComplete();
+        /**
+         * call after seek action complete
+         * @param positionAfterSeek
+         */
         void onSeekComplete(long positionAfterSeek);
         void onPause();
         void onStop();
         void onReset();
         void onRelease();
+        /**
+         * notify position change while playback
+         * @param position
+         * @param duration
+         */
         void onPositionUpdate(long position,long duration);
+
+        /**
+         * trigger when volume changed
+         * @param newV1
+         * @param newV2
+         */
         void onVolumeChanged(float newV1,float newV2);
+
+        /**
+         * notify buffering progress
+         * @param loadedPercentage
+         */
         void onBuffering(int loadedPercentage);
         void onError(Exception e);
         void onVideoSizeChanged(int width, int height);

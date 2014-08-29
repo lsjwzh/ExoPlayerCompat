@@ -114,6 +114,9 @@ import java.io.IOException;
 
     @Override
     public void release() {
+        if(mMediaMonitor!=null){
+            mMediaMonitor.quit();
+        }
         //ensure that player do not release at ui thread to avoid ANR in some rom
         if(Looper.myLooper()==Looper.getMainLooper()){
             new Thread(){
