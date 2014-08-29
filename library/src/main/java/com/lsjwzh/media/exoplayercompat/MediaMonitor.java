@@ -65,6 +65,7 @@ public class MediaMonitor implements Runnable {
 
     public void quit() {
         if(mThread!=null){
+            task = null;
             synchronized (mLock) {
                 mLock.notifyAll();
             }
