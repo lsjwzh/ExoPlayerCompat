@@ -20,6 +20,7 @@ import android.media.MediaCodec;
 import android.media.MediaCodec.CryptoException;
 import android.media.MediaCrypto;
 import android.media.MediaExtractor;
+import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
 
@@ -302,13 +303,16 @@ public abstract class MediaCodecTrackRenderer extends TrackRenderer {
         codec.stop();
       } finally {
           //use gc instead of release to prevent crash in some roms like MEIZU...
+        try {
+            if(Build.MODEL.contains("MEIZU")){
+                codec = null;
+                System.gc();
+            }else {
+                codec.release();
+            }
+        } finally {
           codec = null;
-          System.gc();
-//        try {
-//          codec.release();
-//        } finally {
-//          codec = null;
-//        }
+        }
       }
     }
   }

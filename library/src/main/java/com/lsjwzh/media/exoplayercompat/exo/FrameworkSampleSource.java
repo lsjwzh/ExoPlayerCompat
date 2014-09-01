@@ -168,7 +168,9 @@ public final class FrameworkSampleSource implements SampleSource {
   public void disable(int track) {
     Assertions.checkState(prepared);
     Assertions.checkState(trackStates[track] != TRACK_STATE_DISABLED);
-    extractor.unselectTrack(track);
+    if(extractor!=null) {
+        extractor.unselectTrack(track);
+    }
     pendingDiscontinuities[track] = false;
     trackStates[track] = TRACK_STATE_DISABLED;
   }
