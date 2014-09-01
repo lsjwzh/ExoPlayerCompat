@@ -1,7 +1,10 @@
 ExoPlayerCompat
 ===============
 
-ExoPlayer Compatibility Library:when ExoPlayer is invalid ,it use MediaPlayer instead of ExoPlayer
+ExoPlayer Compatibility Library:when ExoPlayer is invalid ,it use MediaPlayer instead of ExoPlayer.
+
+ExoPlayerCompat provide a standard MediaPlayer like API.
+Make it easy to use ExoPlayer like MediaPlayer api.
 
 Why
 ===
