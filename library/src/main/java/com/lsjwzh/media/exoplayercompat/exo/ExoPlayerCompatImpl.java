@@ -42,11 +42,13 @@ import java.io.IOException;
     @Override
     public boolean isPlaying() {
         try {
-            return mExoPlayer.getPlayerControl().isPlaying();
+            if(mExoPlayer!=null) {
+                return mExoPlayer.getPlayerControl().isPlaying();
+            }
         } catch (IllegalStateException e) {
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -58,9 +60,11 @@ import java.io.IOException;
     @Override
     public void seekTo(long position) {
         try {
-            mExoPlayer.seekTo((int) position);
-            for(EventListener listener : getListeners()){
-                listener.onSeekComplete(position);
+            if(mExoPlayer!=null) {
+                mExoPlayer.seekTo((int) position);
+                for (EventListener listener : getListeners()) {
+                    listener.onSeekComplete(position);
+                }
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -71,12 +75,14 @@ import java.io.IOException;
     @Override
     public void start() {
         try {
-            mExoPlayer.getPlayerControl().start();
-            if(mMediaMonitor!=null){
-                mMediaMonitor.start();
-            }
-            for(EventListener listener : getListeners()){
-                listener.onStart();
+            if(mExoPlayer!=null) {
+                mExoPlayer.getPlayerControl().start();
+                if (mMediaMonitor != null) {
+                    mMediaMonitor.start();
+                }
+                for (EventListener listener : getListeners()) {
+                    listener.onStart();
+                }
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -87,7 +93,7 @@ import java.io.IOException;
     @Override
     public void pause() {
         //avoid pause called in state 8
-        if (!mExoPlayer.getPlayerControl().isPlaying()) {
+        if (mExoPlayer==null||!mExoPlayer.getPlayerControl().isPlaying()) {
             return;
         }
         mExoPlayer.getPlayerControl().pause();
@@ -141,9 +147,11 @@ import java.io.IOException;
                     }
                 }
             }.start();
-        }else {
-            mExoPlayer.release();
-            mExoPlayer = null;
+        }else{
+            if(mExoPlayer!=null) {
+                mExoPlayer.release();
+                mExoPlayer = null;
+            }
             isReleased = true;
 
             for(EventListener listener : getListeners()){
@@ -154,11 +162,17 @@ import java.io.IOException;
 
     @Override
     public long getCurrentPosition() {
+        if(mExoPlayer==null){
+            return -1;
+        }
         return mExoPlayer.getCurrentPosition();
     }
 
     @Override
     public long getDuration() {
+        if(mExoPlayer==null){
+            return -1;
+        }
         return mExoPlayer.getDuration();
     }
 
@@ -167,7 +181,9 @@ import java.io.IOException;
             return;
         }
         isStartPrepare = true;
-        mExoPlayer.prepare();
+        if(mExoPlayer!=null) {
+            mExoPlayer.prepare();
+        }
     }
 
     @Override
@@ -179,7 +195,9 @@ import java.io.IOException;
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... params) {
-                mExoPlayer.prepare();
+                if(mExoPlayer!=null){
+                    mExoPlayer.prepare();
+                }
                 return null;
             }
 
@@ -313,7 +331,9 @@ import java.io.IOException;
     @Override
     public void setDisplay(SurfaceHolder holder) {
         try {
-            mExoPlayer.setSurface(holder == null ? null : holder.getSurface());
+            if(mExoPlayer!=null) {
+                mExoPlayer.setSurface(holder == null ? null : holder.getSurface());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             this.holder = null;
@@ -336,7 +356,9 @@ import java.io.IOException;
 
     @Override
     public void setVolume(float v, float v1) {
-        mExoPlayer.setVolume(v);
+        if(mExoPlayer!=null) {
+            mExoPlayer.setVolume(v);
+        }
 
         for(EventListener listener : getListeners()){
             listener.onVolumeChanged(v,v);
