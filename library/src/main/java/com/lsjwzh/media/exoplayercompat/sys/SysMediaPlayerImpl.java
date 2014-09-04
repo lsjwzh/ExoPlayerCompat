@@ -53,6 +53,14 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
                     }
                 }
             });
+            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    for (EventListener listener : getListeners()) {
+                        listener.onPlayComplete();
+                    }
+                }
+            });
         }
         try {
             mMediaPlayer.setDataSource(path);
