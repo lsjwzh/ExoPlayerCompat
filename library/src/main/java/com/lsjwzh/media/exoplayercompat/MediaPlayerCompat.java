@@ -8,6 +8,8 @@ import com.lsjwzh.media.exoplayercompat.exo.ExoPlayerCompatImpl;
 import com.lsjwzh.media.exoplayercompat.sys.SysMediaPlayerImpl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -106,6 +108,7 @@ public abstract class MediaPlayerCompat {
         mListeners.remove(listener);
     }
     public List<EventListener> getListeners(){
-        return mListeners;
+        EventListener[] eventListeners = new EventListener[mListeners.size()];
+        return Arrays.asList(mListeners.toArray(eventListeners));
     }
 }
