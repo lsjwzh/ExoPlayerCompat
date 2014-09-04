@@ -227,6 +227,10 @@ import java.io.IOException;
                     if(bufferedPercentage==100){
                         mIsBuffering = false;
                     }
+                    //fix bug: BufferingUpdate still can been triggered when mediaplayer is playing,
+                    if(isPlaying()){
+                        bufferedPercentage=100;
+                    }
                     //xx 很可能到不了100%？
                     for(EventListener listener : getListeners()){
                         listener.onBuffering(bufferedPercentage);

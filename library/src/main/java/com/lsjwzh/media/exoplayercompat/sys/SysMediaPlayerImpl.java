@@ -54,7 +54,7 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
                 public void onBufferingUpdate(MediaPlayer mp, int percent) {
                     //fix bug: BufferingUpdate still can been triggered when mediaplayer is playing,
                     if(isPlaying()){
-                        return;
+                        percent=100;
                     }
                     for (EventListener listener : getListeners()) {
                         listener.onBuffering(percent);
