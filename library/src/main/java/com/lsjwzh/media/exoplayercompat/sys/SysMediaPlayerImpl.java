@@ -52,6 +52,10 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
             mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
                 @Override
                 public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                    //fix bug: BufferingUpdate still can been triggered when mediaplayer is playing,
+                    if(isPlaying()){
+                        return;
+                    }
                     for (EventListener listener : getListeners()) {
                         listener.onBuffering(percent);
                     }
@@ -117,10 +121,10 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
 
     @Override
     public void seekTo(final long position) {
-        //seekTo will cause a error if mediaplayer have not started
+        //seekTo will cause a error if mediaplayer have not been started
         if(!mIsStarted){
-
-            return;
+            start();
+            pause();
         }
         if (mMediaPlayer != null) {
             mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
