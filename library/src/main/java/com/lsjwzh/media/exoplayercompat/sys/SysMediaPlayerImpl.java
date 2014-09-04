@@ -18,6 +18,10 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
     private boolean mIsPrepared;
     private boolean mIsReleased;
     MediaMonitor mMediaMonitor;
+    /**
+     * seekTo will cause a error if mediaplayer have not started
+     */
+    private boolean mIsStarted;
 
     @Override
     public void setDataSource(Context context, String path) {
@@ -101,6 +105,7 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
     public void start() {
         if (mMediaPlayer != null) {
             mMediaPlayer.start();
+            mIsStarted = true;
             if (mMediaMonitor != null) {
                 mMediaMonitor.start();
             }
@@ -112,6 +117,11 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
 
     @Override
     public void seekTo(final long position) {
+        //seekTo will cause a error if mediaplayer have not started
+        if(!mIsStarted){
+            start();
+            return;
+        }
         if (mMediaPlayer != null) {
             mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
                 @Override
@@ -127,6 +137,9 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
 
     @Override
     public void pause() {
+        if(!mIsStarted){
+            return;
+        }
         if (mMediaPlayer != null) {
             mMediaPlayer.pause();
             if (mMediaMonitor != null) {
@@ -140,6 +153,9 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
 
     @Override
     public void stop() {
+        if(!mIsStarted){
+            return;
+        }
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
             if (mMediaMonitor != null) {
@@ -153,6 +169,9 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
 
     @Override
     public void reset() {
+        if(!mIsStarted){
+            return;
+        }
         if (mMediaPlayer != null) {
             mMediaPlayer.reset();
             if (mMediaMonitor != null) {
@@ -180,6 +199,9 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
 
     @Override
     public long getCurrentPosition() {
+        if(!mIsStarted){
+            return 0;
+        }
         if (mMediaPlayer != null) {
             return mMediaPlayer.getCurrentPosition();
         }
@@ -196,6 +218,9 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
 
     @Override
     public boolean isPlaying() {
+        if(!mIsStarted){
+            return false;
+        }
         if (mMediaPlayer != null) {
             return mMediaPlayer.isPlaying();
         }
