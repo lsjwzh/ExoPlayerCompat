@@ -119,7 +119,7 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
     public void seekTo(final long position) {
         //seekTo will cause a error if mediaplayer have not started
         if(!mIsStarted){
-            start();
+
             return;
         }
         if (mMediaPlayer != null) {
