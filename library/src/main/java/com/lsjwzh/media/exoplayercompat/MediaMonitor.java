@@ -13,7 +13,7 @@ public class MediaMonitor implements Runnable {
     public Runnable task;
     volatile boolean isRunning = false;
     Thread mThread;
-    Handler initHandler = new Handler();
+    Handler initHandler = new Handler(Looper.getMainLooper());
 
     /**
      * Creates a worker thread with the given name. The thread

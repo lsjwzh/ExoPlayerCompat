@@ -49,6 +49,14 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
                     }
                 }
             };
+            mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
+                @Override
+                public void onSeekComplete(MediaPlayer mp) {
+                    for (EventListener listener : getListeners()) {
+                        listener.onSeekComplete(getCurrentPosition());
+                    }
+                }
+            });
             mMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
                 @Override
                 public void onBufferingUpdate(MediaPlayer mp, int percent) {
@@ -84,6 +92,9 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
         try {
             mMediaPlayer.prepare();
             mIsPrepared = true;
+            for (EventListener listener : getListeners()) {
+                listener.onPrepared();
+            }
         } catch (IOException e) {
             for (EventListener listener : getListeners()) {
                 listener.onError(e);
@@ -127,14 +138,6 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
             pause();
         }
         if (mMediaPlayer != null) {
-            mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
-                @Override
-                public void onSeekComplete(MediaPlayer mp) {
-                    for (EventListener listener : getListeners()) {
-                        listener.onSeekComplete(position);
-                    }
-                }
-            });
             mMediaPlayer.seekTo((int) position);
         }
     }
@@ -244,7 +247,11 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
     @Override
     public void setDisplay(SurfaceHolder holder) {
         if (mMediaPlayer != null) {
-            mMediaPlayer.setDisplay(holder);
+            try {
+                mMediaPlayer.setDisplay(holder);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

@@ -62,6 +62,15 @@ public class StrongerMediaPlayer extends MediaPlayer {
         };
 //        this.setErrHandler(errorOp);
         this.setOnErrorListener(errorOp);
+        super.setOnCompletionListener(new OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mIsPlaying = false;
+                if(getOnCompletionListener()!=null){
+                    getOnCompletionListener().onCompletion(mp);
+                }
+            }
+        });
     }
 
 
@@ -73,7 +82,11 @@ public class StrongerMediaPlayer extends MediaPlayer {
     @Override
     public void prepare() throws IOException, IllegalStateException {
         mIsPreparing = true;
-        super.prepare();
+        try {
+            super.prepare();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         mIsPreparing = false;
     }
 
@@ -165,6 +178,7 @@ public class StrongerMediaPlayer extends MediaPlayer {
     @Override
     public void release() {
         try {
+           mIsPlaying=false;
             //当在准备当中时,等待准备完毕或者准备失败再释放资源
             //需要等待prepare完毕再释放资源
             if(mIsPreparing) {
@@ -260,7 +274,6 @@ public class StrongerMediaPlayer extends MediaPlayer {
     @Override
     public void setOnCompletionListener(OnCompletionListener listener) {
         this.onCompletionListener = listener;
-        super.setOnCompletionListener(listener);
     }
 
     public OnPreparedListener getOnPreparedListener() {

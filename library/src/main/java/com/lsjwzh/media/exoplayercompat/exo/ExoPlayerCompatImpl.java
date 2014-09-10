@@ -27,7 +27,7 @@ import java.io.IOException;
     private boolean isPrepared;
     private boolean isReleased;
     private boolean isStartPrepare = false;
-    Handler handler = new Handler();
+    Handler handler = new Handler(Looper.getMainLooper());
     private MediaMonitor mMediaMonitor;
     private boolean mIsBuffering;
     private boolean mOnlyAudio;
@@ -92,14 +92,15 @@ import java.io.IOException;
 
     @Override
     public void pause() {
+        if(mMediaMonitor!=null){
+            mMediaMonitor.pause();
+        }
         //avoid pause called in state 8
         if (mExoPlayer==null||!mExoPlayer.getPlayerControl().isPlaying()) {
             return;
         }
         mExoPlayer.getPlayerControl().pause();
-        if(mMediaMonitor!=null){
-            mMediaMonitor.pause();
-        }
+
         for(EventListener listener : getListeners()){
             listener.onPause();
         }
