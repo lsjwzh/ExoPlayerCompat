@@ -96,6 +96,7 @@ public abstract class MediaPlayerCompat {
     public abstract boolean isReleased();
 
     public abstract void setDisplay(SurfaceHolder holder);
+    public abstract void setPlaybackSpeed(float speed);
     public abstract void setVolume(float v1, float v2);
     public abstract void setAudioStreamType(int streamMusic);
 
