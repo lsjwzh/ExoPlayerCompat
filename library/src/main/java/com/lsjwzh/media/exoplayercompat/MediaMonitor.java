@@ -39,6 +39,7 @@ public class MediaMonitor implements Runnable {
             synchronized (mLock) {
                 if (!isRunning) {
                     try {
+                        initHandler.removeCallbacksAndMessages(null);
                         mLock.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -47,12 +48,15 @@ public class MediaMonitor implements Runnable {
             }
             SystemClock.sleep(100);
             //not execute task in Monitor Thread
-            if (task != null) {
+            if (task != null&&isRunning) {
                 try {
+                    initHandler.removeCallbacksAndMessages(null);
                     initHandler.post(task);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }else {
+                initHandler.removeCallbacksAndMessages(null);
             }
         }
     }
@@ -67,6 +71,7 @@ public class MediaMonitor implements Runnable {
         if(mThread!=null){
             task = null;
             synchronized (mLock) {
+                isRunning = false;
                 mLock.notifyAll();
             }
             mThread.interrupt();

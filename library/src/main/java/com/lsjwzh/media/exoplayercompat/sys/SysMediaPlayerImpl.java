@@ -193,10 +193,11 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
     @Override
     public void release() {
         if (mMediaPlayer != null) {
-            mMediaPlayer.release();
             if (mMediaMonitor != null) {
                 mMediaMonitor.quit();
             }
+            mMediaPlayer.release();
+
             mIsReleased = true;
             for (EventListener listener : getListeners()) {
                 listener.onRelease();

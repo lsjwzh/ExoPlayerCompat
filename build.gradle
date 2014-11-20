@@ -3,6 +3,8 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url "http://nexus.mofun.so:8081/nexus/content/groups/public/" }
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.+'
@@ -13,6 +15,8 @@ buildscript {
 allprojects {
     repositories {
         mavenCentral()
+        maven { url "http://nexus.mofun.so:8081/nexus/content/groups/public/" }
+
     }
 
 }

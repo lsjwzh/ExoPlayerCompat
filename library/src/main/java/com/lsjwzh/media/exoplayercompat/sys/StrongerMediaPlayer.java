@@ -71,6 +71,7 @@ public class StrongerMediaPlayer extends MediaPlayer {
                 }
             }
         });
+        setScreenOnWhilePlaying(true);
     }
 
 
