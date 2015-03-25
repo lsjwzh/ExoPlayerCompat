@@ -347,6 +347,11 @@ import java.io.IOException;
     }
 
     @Override
+    public void setPlaybackSpeed(float speed) {
+
+    }
+
+    @Override
     public void reset() {
         isPrepared = false;
         this.setDisplay(null);

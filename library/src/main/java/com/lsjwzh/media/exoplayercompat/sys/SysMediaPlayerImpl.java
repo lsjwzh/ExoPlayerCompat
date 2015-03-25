@@ -257,6 +257,11 @@ public class SysMediaPlayerImpl extends MediaPlayerCompat {
     }
 
     @Override
+    public void setPlaybackSpeed(float speed) {
+
+    }
+
+    @Override
     public void setVolume(float v1, float v2) {
         if (mMediaPlayer != null) {
             mMediaPlayer.setVolume(v1, v2);
